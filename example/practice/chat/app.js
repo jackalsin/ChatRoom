@@ -7,10 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var chatRoomRouter = require('./routes/chatroom');
 
 var app = express();
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,20 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/chat-room',chatRoomRouter);
-
-/************************************************/
-// Step 1. add socket
-var server = require('http').createServer(app);
-var socket = require('./routes/chatroom');
-
-/************** Sever Socket Listener ***********/
-var io = require('socket.io').listen(server);
-chatRoomRouter(io); // chat room
-
-/************************************************/
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

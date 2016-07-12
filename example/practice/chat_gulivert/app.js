@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
 /**
  * add Socket module
  */
@@ -64,11 +65,19 @@ app.use(function(err, req, res, next) {
 app.io.on('connection', function(socket){
   console.log('a user connected');
 
-  socket.on('new message', function (msg) {
+  // add user handler
+  socket.on('add user', function (username) {
+    console.log("add user: " + username);
+    socket.username = username;
+    app.io.emit("system broadcast", username + " has joint the conversation");
+  });
+
+  // broadcast all message
+  socket.on('send chat', function (msg) {
     console.log("new message:" + msg);
-    app.io.emit('chat message', msg);
+    app.io.emit('update chat', socket.username, msg);
     
   });
-});
+}); // end of connection
 
 module.exports = app;

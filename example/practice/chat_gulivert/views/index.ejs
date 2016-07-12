@@ -32,13 +32,30 @@
     </nav>
     <script>
       var socket = io();
+      var username;
+      // login and add user
+      socket.on('connect', function(){
+        // call the server-side function 'adduser' and send one parameter (value of prompt)
+        username = prompt("What is your username");
+        socket.emit('add user', username);
+      });
+
+      // system board cast
+      socket.on('system broadcast', function (sysMsg) {
+        $('#messages-area').append("### System Msg:"  + (sysMsg) + "<br>");
+      });
+
+      // send message
       function sendFunction() {
-        socket.emit('new message', $('#new-message').val());
+        socket.emit('send chat', $('#new-message').val());
         $('#new-message').val('');
       }
-      socket.on('chat message', function(msg){
-        $('#messages-area').append($('<li>').text(msg));
+
+      // received message and update chat area
+      socket.on('update chat', function(username, msg){
+        $('#messages-area').append("<b>"+username + ":</b> " + msg + "<br>");
       });
+
     </script>
   </body>
 </html>

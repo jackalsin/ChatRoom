@@ -92,16 +92,15 @@ app.io.on('connection', function(socket){
       if (err)  next(err);
       var companies = sender.companies;
       var contacts = [];
-
+      console.log("====>" + sender.companies);
       function getContacts() {
         var i = 0;
         function getContactsHelper(i) {
           Companies.findOne({'name': companies[i]}, 'employees', function (err, company) {
             if (err) console.log(err);
-
             if (i < companies.length) {
               contacts = contacts.concat(company.employees);
-              getContacts(i + 1);
+              getContactsHelper(i + 1);
             } else {
               console.log("===============> fetched contacts:" + contacts);
               socket.emit('initialize', {contacts: contacts});
@@ -110,7 +109,7 @@ app.io.on('connection', function(socket){
         }
         getContactsHelper(0);
       }
-      getContacts(0);
+      getContacts();
     });
     app.io.emit("system broadcast", username + " has joint the conversation");
     allSockets[username] = socket;

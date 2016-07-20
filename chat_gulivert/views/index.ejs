@@ -20,18 +20,8 @@
     </div>
 
     <div id="wrapper">
-      <!-- Sidebar -->
-      <div id="sidebar" class="collapse">
-        <ul id="menu-ul" class="nav nav-pills nav-stacked">
-          <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
-          <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
-          <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
-          <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
-        </ul>
-      </div>
-
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-3">
           <!-- Sidebar -->
           <div id="sidebar" class="collapse">
             <ul id="menu-ul" class="nav nav-pills nav-stacked">
@@ -41,8 +31,10 @@
               <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
             </ul>
           </div>
+        </div>
 
-          <div id='tab' class="tab-content">
+        <div class="col-sm-9">
+        <div id='tab' class="tab-content">
             <div id="home" class="tab-pane fade in active">
               <h3>HOME</h3>
               <ul id="messages-area" class="list-group"></ul>
@@ -90,6 +82,7 @@
 
       socket.on("initialize", function (initInfo) {
         $('#messages-area').append("### Already Fetch contacts : "  + (initInfo.contacts) + "<br>");
+        loadContacts(initInfo.contacts);
       });
 
       // system board cast
@@ -111,6 +104,43 @@
         $('#messages-area').append("<b>"+ username + ":</b> " + msg + "<br>");
       });
 
+      // help functions
+      /**
+       * @contacts: an array of contacts
+       */
+      function loadContacts(contacts) {
+        var friendList = document.getElementById('menu-ul');
+        var msgBoxTabs = document.getElementById('tab');
+        // <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
+        contacts.forEach(function(entry) {
+          // create a contact in list
+          var newList = document.createElement('li');
+          var newA = document.createElement('a');
+          newA.setAttribute('data-toggle', "pill");
+          newA.setAttribute('href', "#msg-box-" + entry);
+          newA.appendChild(document.createTextNode(entry));
+          newList.appendChild(newA);
+          friendList.appendChild(newList);
+          // create a tab in list
+          /*
+           <div id="home" class="tab-pane fade in active">
+           <h3>HOME</h3>
+           <ul id="messages-area" class="list-group"></ul>
+           </div>
+          */
+          var newDiv = document.createElement("tab-" + entry);
+          var newHead = document.createElement('h3');
+          newHead.appendChild(document.createTextNode(entry))
+          var newTabList = document.createElement('ul');
+          newTabList.setAttribute("id","msg-box-" + entry);
+          newTabList.setAttribute('class', 'list-group');
+          newHead.appendChild(newTabList);
+          newDiv.appendChild(newHead);
+          msgBoxTabs.appendChild(newDiv);
+        });
+
+
+      }
     </script>
   </body>
 </html>

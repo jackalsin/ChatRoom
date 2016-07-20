@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/sidebar.css" />
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="page-header">
+        <h1><%= title %> <small>Welcome to <%= title %></small></h1>
+        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+      </div>
+    </div>
+
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+            <a href="#">
+              Username
+            </a>
+          </li>
+          <li>
+            <a href="#">Dashboard</a>
+          </li>
+          <li>
+            <a href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <ul id="messages-area" class="list-group"></ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!--The input area-->
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <form class="navbar-form" id="form" onsubmit="return false;">
+              <div class="form-group"  style="width:83%">
+                <input id="new-message" type="text" class="form-control" placeholder="Search" style="width:100%">
+              </div>
+              <button type="submit" class="btn ban-primary" onclick="sendFunction()" style="width:16%">Send</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+
+
+
+    <script>
+      // menu button
+      $("#menu-toggle").click(function(e){
+        e.preventDefault();
+        console.log("Executing toggle");
+        $('#wrapper').toggleClass("toggled");
+      });
+
+      // socket
+      var socket = io();
+      var username;
+      // login and add user
+      socket.on('connect', function(){
+        // call the server-side function 'adduser' and send one parameter (value of prompt)
+        username = prompt("What is your username");
+        socket.emit('add user', username);
+
+        socket.on("initialize", function (initInfo) {
+          $('#messages-area').append("### Already Fetch contacts :"  + (initInfo.contacts) + "<br>");
+        });
+
+      });
+
+      // system board cast
+      socket.on('system broadcast', function (sysMsg) {
+        $('#messages-area').append("### System Msg:"  + (sysMsg) + "<br>");
+      });
+
+      // send message
+      function sendFunction() {
+        socket.emit('send chat', {
+          //todo: update receiver
+          user: 'a2',
+          msg: $('#new-message').val()});
+        $('#new-message').val('');
+      }
+
+      // received message and update chat area
+      socket.on('update chat', function(username, msg){
+        $('#messages-area').append("<b>"+username + ":</b> " + msg + "<br>");
+      });
+
+    </script>
+  </body>
+</html>

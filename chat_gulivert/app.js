@@ -65,15 +65,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-
-
-
-
-
-
-
-
 //////////////////// mongo db
 var mongoose = require('mongoose');
 var url = 'mongodb://localhost:27017/conFusion';
@@ -93,23 +84,33 @@ var allSockets = {};
 app.io.on('connection', function(socket){
   console.log('a user connected');
 
-  // temp data
-  // todo: change to database
-
-  var friends = ['a2', 'a3'];
-
   // add user handler
   socket.on('add user', function (username) {
     console.log("add user: " + username);
     socket.username = username;
-    Users.findOne({ 'name' : username }, 'companies', function (err, sender) {
+    Users.findOne({ 'username' : username }, 'companies', function (err, sender) {
+      if (err)  next(err);
       var companies = sender.companies;
       var contacts = [];
-      for (i = 0; i < companies.length; i++) {
-        contacts.concat(companies[i].employees);
+
+      function getContacts() {
+        var i = 0;
+        function getContactsHelper(i) {
+          Companies.findOne({'name': companies[i]}, 'employees', function (err, company) {
+            if (err) console.log(err);
+
+            if (i < companies.length) {
+              contacts = contacts.concat(company.employees);
+              getContacts(i + 1);
+            } else {
+              console.log("===============> fetched contacts:" + contacts);
+              socket.emit('initialize', {contacts: contacts});
+            }
+          });
+        }
+        getContactsHelper(0);
       }
-      console.log("===============> fetched contacts:" + contacts);
-      app.io.to(socket).emit('initialize', {contacts: contacts});
+      getContacts(0);
     });
     app.io.emit("system broadcast", username + " has joint the conversation");
     allSockets[username] = socket;

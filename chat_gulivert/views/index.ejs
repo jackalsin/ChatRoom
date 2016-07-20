@@ -78,11 +78,10 @@
         // call the server-side function 'adduser' and send one parameter (value of prompt)
         username = prompt("What is your username");
         socket.emit('add user', username);
+      });
 
-        socket.on("initialize", function (initInfo) {
-          $('#messages-area').append("### Already Fetch contacts :"  + (initInfo.contacts) + "<br>");
-        });
-
+      socket.on("initialize", function (initInfo) {
+        $('#messages-area').append("### Already Fetch contacts : "  + (initInfo.contacts) + "<br>");
       });
 
       // system board cast

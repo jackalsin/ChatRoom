@@ -111,16 +111,7 @@
       function loadContacts(contacts) {
         var friendList = document.getElementById('menu-ul');
         var msgBoxTabs = document.getElementById('tab');
-        // <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
         contacts.forEach(function(entry) {
-          // create a contact in list
-          var newList = document.createElement('li');
-          var newA = document.createElement('a');
-          newA.setAttribute('data-toggle', "pill");
-          newA.setAttribute('href', "#msg-box-" + entry);
-          newA.appendChild(document.createTextNode(entry));
-          newList.appendChild(newA);
-          friendList.appendChild(newList);
           // create a tab in list
           /*
            <div id="home" class="tab-pane fade in active">
@@ -128,15 +119,28 @@
            <ul id="messages-area" class="list-group"></ul>
            </div>
           */
-          var newDiv = document.createElement("tab-" + entry);
+          var newDiv = document.createElement('div');
+          newDiv.setAttribute('id', "tab-" + entry);
+          newDiv.setAttribute('class', 'tab-pane fade');
           var newHead = document.createElement('h3');
           newHead.appendChild(document.createTextNode(entry))
-          var newTabList = document.createElement('ul');
-          newTabList.setAttribute("id","msg-box-" + entry);
-          newTabList.setAttribute('class', 'list-group');
-          newHead.appendChild(newTabList);
+          var newUnsortedList = document.createElement('ul');
+          newUnsortedList.setAttribute("id","msg-box-" + entry);
+          newUnsortedList.setAttribute('class', 'list-group');
+          newHead.appendChild(newUnsortedList);
           newDiv.appendChild(newHead);
           msgBoxTabs.appendChild(newDiv);
+          console.log("Entry = " + entry);
+          // create a contact in list
+          // <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
+          var newList = document.createElement('li');
+          var newA = document.createElement('a');
+          newA.setAttribute('data-toggle', "pill");
+          newA.setAttribute('href', "#tab-" + entry);
+//          newA.setAttribute('href', "#menu2");
+          newA.appendChild(document.createTextNode(entry));
+          newList.appendChild(newA);
+          friendList.appendChild(newList);
         });
 
 

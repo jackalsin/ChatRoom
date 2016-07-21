@@ -121,14 +121,16 @@ app.io.on('connection', function(socket){
   */
   socket.on('send chat', function (user_msg) {
 
-    console.log("new message:" + user_msg.msg);
+    console.log("send to " + user_msg.user + " new message:" + user_msg.msg);
     var receiverSocket = allSockets[user_msg.user];
+
     if (receiverSocket) {
       // app.io.emit('update chat', socket.username, user_msg.msg);
-      app.io.to(receiverSocket).emit('update chat', socket.username, user_msg.msg);
+      // app.io.to(receiverSocket).emit('update chat', socket.username, user_msg.msg);
+      receiverSocket.emit('update chat', socket.username, user_msg.msg);
     }
     // todo: update the date base
-  //  http://stackoverflow.com/questions/23619015/creating-a-private-chat-between-a-key-using-a-node-js-and-socket-io
+    //  http://stackoverflow.com/questions/23619015/creating-a-private-chat-between-a-key-using-a-node-js-and-socket-io
   });
 
   socket.on('disconnect', function () {

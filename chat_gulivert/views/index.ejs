@@ -73,6 +73,7 @@
       // socket
       var socket = io();
       var username;
+      var recver;
       // login and add user
       socket.on('connect', function(){
         // call the server-side function 'adduser' and send one parameter (value of prompt)
@@ -93,14 +94,14 @@
       // send message
       function sendFunction() {
         socket.emit('send chat', {
-          //todo: update receiver
-          user: 'a2',
+          user: recver,
           msg: $('#new-message').val()});
         $('#new-message').val('');
       }
 
       // received message and update chat area
       socket.on('update chat', function(username, msg){
+        // todo: change to update chat window
         $('#messages-area').append("<b>"+ username + ":</b> " + msg + "<br>");
       });
 
@@ -137,13 +138,17 @@
           var newA = document.createElement('a');
           newA.setAttribute('data-toggle', "pill");
           newA.setAttribute('href', "#tab-" + entry);
-//          newA.setAttribute('href', "#menu2");
+          newA.setAttribute('id', 'id-' + entry);
+          newA.setAttribute('onclick', 'chooseRecv(id)');
           newA.appendChild(document.createTextNode(entry));
           newList.appendChild(newA);
           friendList.appendChild(newList);
         });
+      }
 
-
+      function chooseRecv(id) {
+        recver = id.substr(3);
+        console.log("Setting recver to " + recver);// todo: debug line
       }
     </script>
   </body>

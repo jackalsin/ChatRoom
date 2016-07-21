@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Dynamic Pills</h2>
+  <button class="btn btn-default" data-toggle="collapse" data-target="#menu">Collapsible</button>
+  <div id="menu" class="collapse">
+    <ul id="menu-ul" class="nav nav-pills nav-stacked">
+      <li class="active"><a data-toggle="pill" href="#home">Home</a></li>
+      <li><a data-toggle="pill" href="#menu1">Menu 1</a></li>
+      <li><a data-toggle="pill" href="#menu2">Menu 2</a></li>
+      <li><a data-toggle="pill" href="#menu3">Menu 3</a></li>
+    </ul>      
+  </div>
+
+  
+  <div id='tab' class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      <div id="div1">The text above has been created dynamically.</div>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <h3>Menu 1</h3>
+      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+      <h3>Menu 2</h3>
+      <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+    </div>
+    <div id="menu3" class="tab-pane fade">
+      <h3>Menu 3</h3>
+      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+    </div>
+  </div>
+</div>
+<script>
+  // add menu
+  var menulist = document.getElementById('menu-ul');
+  var newMenu = document.createElement('li');
+  var newA = document.createElement('a');
+  newA.setAttribute('data-toggle', "pill");
+  newA.setAttribute('href', "#menu4");
+  newA.appendChild(document.createTextNode("Menu 4"));
+  newMenu.appendChild(newA);
+  menulist.appendChild(newMenu);
+  // add tab
+  
+  appendText('menu3', "I want to add this line ");
+
+  
+  function appendText(className, textToAppend) {
+    var menu3 = document.getElementById(className);
+    menu3.appendChild(document.createTextNode(textToAppend));
+  }
+  
+</script>
+
+</body>
+</html>

@@ -4,13 +4,18 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// create a schema
 var messageSchema = new Schema({
   date: { type: Date, default: Date.now },
   content: { type: String, required: true },
   owner: { type: String, required: true }
 });
 
-var Messages = mongoose.model('Messages', messageSchema);
+// create a schema
+var chatRoomSchema = new Schema({
+  usernames: [{ type: String, required: true, unique: true }],
+  messages: [messageSchema]
+});
 
-module.exports = Messages;
+var ChatRooms = mongoose.model('ChatRooms', chatRoomSchema);
+
+module.exports = ChatRooms;

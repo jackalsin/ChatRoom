@@ -117,7 +117,7 @@ app.io.on('connection', function(socket){
 
   // broadcast all message
   /** user_msg format
-   {  user: username, msg: msg  }
+   {  user: username(the receiver), msg: msg  }
   */
   socket.on('send chat', function (user_msg) {
 

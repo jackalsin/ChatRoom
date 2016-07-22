@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 // create a schema
 var userSchema = new Schema({
   username: { type: String, required: true, unique: true },
-  historyRooms: [{ type: mongoose.Types.ObjectId, required:true }],
+  historyRooms: [{ type: Schema.Types.ObjectId, required:true, ref: "ChatRooms" }],
   companies:[{ type: String, required: true }]
 });
 

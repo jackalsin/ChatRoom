@@ -93,7 +93,9 @@ app.io.on('connection', function(socket){
         console.log(err);
         socket.emit('initialize', {err: err});
       } else {
-        socket.emit('initialize', {contacts: contacts});
+        dbOps.getHistoryChatRoomsWithLatest20Msgs(username, function (err, chatRooms) {
+          socket.emit('initialize', {contacts: contacts});
+        });
       }
     });
 
@@ -102,7 +104,8 @@ app.io.on('connection', function(socket){
   });
 
   // broadcast all message
-  /** user_msg format
+  /**
+   * user_msg format
    {  user: username(the receiver), msg: msg  }
   */
   socket.on('send chat', function (user_msg) {
@@ -113,8 +116,6 @@ app.io.on('connection', function(socket){
     if (receiverSocket) {
       receiverSocket.emit('update chat', socket.username, user_msg.msg);
     }
-    // todo: update the date base
-    //  http://stackoverflow.com/questions/23619015/creating-a-private-chat-between-a-key-using-a-node-js-and-socket-io
     dbOps.addMessageToChatRoom([socket.username, user_msg.user], user_msg, function (err) {
       console.log("Error: " + err);
     });

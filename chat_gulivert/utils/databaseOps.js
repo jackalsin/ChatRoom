@@ -52,7 +52,7 @@ exports.getHistoryChatRoomsWithLatest20Msgs = function(user, callback) {
           });
         });
         chatRoomsWithMsgs.reverse();
-        console.log("Inner" + chatRoomsWithMsgs);
+        console.log("Inner" + chatRoomsWithMsgs); // todo: debug line
         callback(err, chatRoomsWithMsgs);
       });
     }
@@ -85,10 +85,8 @@ exports.getChatRoomByUsers = function (users, callback) {
           Users.update({ username: sortedUsers[i] },
             { $push: { historyRooms: newChatRoom._id}},{ safe:true },
               function (err, numAffected, rawResponse) {
-                if (err) { // todo: delete generated and the one already inserted
                   callback(err, newChatRoom);
                   // end of program, no return needed.
-                }
               }
             );
         }

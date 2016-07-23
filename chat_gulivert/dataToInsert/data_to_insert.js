@@ -26,7 +26,6 @@ db.once('open', function () {
       console.log(err);
     }
   });
-
   // ----- users ---------------
   Users.create({
     username: "a1",

@@ -54,13 +54,20 @@ db.once('open', function () {
       assert(contacts, ["a1", "a2", "a3"]);
     }
   });
-  
-  dbOps.getHistoryChatRoomsWithLatest20Msgs("a1", function (err, result) {
-    console.log("\n\nTest of getHistoryChatRoomsWithLatest20Msgs ");
-    if (err) throw err;
-    else {
-      console.log("result = " + result);
-    }
+
+  Users.findOne({username: "a1"}, function (err, userFound) {
+    console.log("User Found: " + userFound.historyRooms);
+
+    dbOps.getHistoryChatRoomsWithLatest20Msgs("a1", function (err, result) {
+      console.log("\n\nTest of getHistoryChatRoomsWithLatest20Msgs ");
+      if (err) throw err;
+      else {
+        console.log("result = " + result);
+      }
+    });
+
   });
+
+
 });
 

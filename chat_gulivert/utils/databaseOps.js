@@ -81,7 +81,10 @@ exports.getChatRoomByUsers = function (users, callback) {
         console.log("new ChatRoom created! ");
         // save this id to all users
         // todo: fix another for each issue
-        for (var i = 0; i < sortedUsers.length; i++) {
+
+        // Users.update({'username': {$in: sortedUsers}}, {$push: {historyRooms: chatRoomFound._id }}, {safe:true}, function (err) {
+/*
+          for (var i = 0; i < sortedUsers.length; i++) {
           Users.update({ username: sortedUsers[i] },
             { $push: { historyRooms: newChatRoom._id}},{ safe:true },
               function (err, numAffected, rawResponse) {
@@ -89,7 +92,13 @@ exports.getChatRoomByUsers = function (users, callback) {
                   // end of program, no return needed.
               }
             );
-        }
+        } // end of for loop
+*/
+
+        Users.update({'username': {$in: sortedUsers}}, {$push: {historyRooms: newChatRoom._id}}, {safe: true}, function (err) {
+          if (err) callback(err, null);
+          else callback(err, newChatRoom);
+        });
       });
     } else { // already exist
       // console.log("getChatRoomByUsers: " + chatRoom);// todo:debug line

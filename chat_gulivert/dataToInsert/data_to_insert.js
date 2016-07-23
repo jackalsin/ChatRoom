@@ -12,19 +12,17 @@ db.once('open', function () {
   console.log("Connected to mongodb server");
 
   // initialize company
-  Companies.create({
+  var companiesToInsert = [{
     name: "a",
     employees:["a1", "a2", "a3"]
-  }, function(err, company) {
-    if (err) throw err;
-  });
-  Companies.create({
+  },{
     name: "b",
     employees:["b1", "b2", "b3"]
-  }, function (err, company) {
-    if (err) {
-      console.log(err);
-    }
+  }];
+
+  Companies.create(companiesToInsert, function (err, companies) {
+    if (err) throw err;
+    console.log("Insert Companies successfully");
   });
   // ----- users ---------------
   Users.create({

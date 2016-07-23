@@ -17,10 +17,7 @@ db.once('open', function () {
     employees:["a1", "a2", "a3"]
   }, function(err, company) {
     if (err) throw err;
-    console.log("Company a is created and id = " + company._id);
-
   });
-  console.log("Created company a");
   Companies.create({
     name: "b",
     employees:["b1", "b2", "b3"]
@@ -28,7 +25,6 @@ db.once('open', function () {
     if (err) {
       console.log(err);
     }
-    console.log("Company a is created and id = " + company._id);
   });
 
   // ----- users ---------------

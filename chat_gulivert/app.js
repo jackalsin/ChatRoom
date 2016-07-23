@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var Users = require('./models/Users');
 var Companies = require('./models/Company');
 var assert = require('assert');
-
+var dbOps = require('./utils/databaseOps');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -88,29 +88,15 @@ app.io.on('connection', function(socket){
   socket.on('add user', function (username) {
     console.log("add user: " + username);
     socket.username = username;
-    Users.findOne({ 'username' : username }, 'companies', function (err, sender) {
-      if (err)  next(err);
-      var companies = sender.companies;
-      var contacts = [];
-      console.log("====>" + sender.companies);
-      function getContacts() {
-        var i = 0;
-        function getContactsHelper(i) {
-          Companies.findOne({'name': companies[i]}, 'employees', function (err, company) {
-            if (err) console.log(err);
-            if (i < companies.length) {
-              contacts = contacts.concat(company.employees);
-              getContactsHelper(i + 1);
-            } else {
-              console.log("===============> fetched contacts:" + contacts);
-              socket.emit('initialize', {contacts: contacts});
-            }
-          });
-        }
-        getContactsHelper(0);
+    dbOps.getContacts(username, function (err, contacts) {
+      if (err) {
+        console.log(err);
+        socket.emit('initialize', {err: err});
+      } else {
+        socket.emit('initialize', {contacts: contacts});
       }
-      getContacts();
     });
+
     app.io.emit("system broadcast", username + " has joint the conversation");
     allSockets[username] = socket;
   });
@@ -125,12 +111,13 @@ app.io.on('connection', function(socket){
     var receiverSocket = allSockets[user_msg.user];
 
     if (receiverSocket) {
-      // app.io.emit('update chat', socket.username, user_msg.msg);
-      // app.io.to(receiverSocket).emit('update chat', socket.username, user_msg.msg);
       receiverSocket.emit('update chat', socket.username, user_msg.msg);
     }
     // todo: update the date base
     //  http://stackoverflow.com/questions/23619015/creating-a-private-chat-between-a-key-using-a-node-js-and-socket-io
+    dbOps.addMessageToChatRoom([socket.username, user_msg.user], user_msg, function (err) {
+      console.log("Error: " + err);
+    });
   });
 
   socket.on('disconnect', function () {

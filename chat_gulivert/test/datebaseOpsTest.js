@@ -3,7 +3,7 @@ var url = 'mongodb://localhost:27017/conFusion';
 var assert = require('assert');
 var Users = require('./../models/Users');
 var Companies = require('./../models/Company');
-var dbOps = require('./../databaseOps');
+var dbOps = require('./../utils/databaseOps');
 
 mongoose.connect(url);
 var db = mongoose.connection;
@@ -11,22 +11,22 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log("Connected to mongodb server");
 
-  dbOps.getHistoryChatRooms("a1", function (err, chatRooms) {
+  dbOps.getHistoryChatRoomsObjId("a1", function (err, chatRooms) {
     if(err) throw err;
-    console.log("getHistoryChatRooms test passed");
+    console.log("getHistoryChatRoomsObjId test passed");
   });
 
-  dbOps.getHistoryChatRooms("INVALID_USRNAME", function (err, chatRooms) {
+  dbOps.getHistoryChatRoomsObjId("INVALID_USRNAME", function (err, chatRooms) {
     console.log("Err msg :" + err);
     assert(err, "Error: No such user");
   });
 
   // check room
-  dbOps.getChatRoom(['a1', 'a2'], function (err, chatRoom) {
+  dbOps.getChatRoomByUsers(['a1', 'a2'], function (err, chatRoom) {
     if (err) throw err;
-    dbOps.getChatRoom(['a1', 'a2'], function (err, secChatRoom) {
+    dbOps.getChatRoomByUsers(['a1', 'a2'], function (err, secChatRoom) {
       assert(chatRoom._id, secChatRoom._id);
-      dbOps.getChatRoom(['a2', 'a1'], function (err, thirdChatRoom) {
+      dbOps.getChatRoomByUsers(['a2', 'a1'], function (err, thirdChatRoom) {
         assert(chatRoom._id, thirdChatRoom._id);
       });
     });
@@ -41,6 +41,26 @@ db.once('open', function () {
     if (err) throw err;
     console.log("Updated Successfully");
   });
+  
+  
+  dbOps.getHistoryMsgFromChatRoom(["a1", "a2"], 0, 20, function (err, result) {
 
+  });
+
+  dbOps.getContacts("a1", function (err, contacts) {
+    if (err) throw err;
+    else {
+      console.log(contacts);
+      assert(contacts, ["a1", "a2", "a3"]);
+    }
+  });
+  
+  dbOps.getHistoryChatRoomsWithLatest20Msgs("a1", function (err, result) {
+    console.log("\n\nTest of getHistoryChatRoomsWithLatest20Msgs ");
+    if (err) throw err;
+    else {
+      console.log("result = " + result);
+    }
+  });
 });
 

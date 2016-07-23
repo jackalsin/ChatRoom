@@ -13,9 +13,9 @@ exports.getUser = function() {
 /**
  * get all history chat room given a specific user.
  * @user: username of the history rooms owner
- * Usage: getHistoryChatRoomsObjId("username", function(err, result))
+ * Usage: getHistoryChatRoomsObjIds("username", function(err, result))
  */
-exports.getHistoryChatRoomsObjId = function (user, callback) {
+exports.getHistoryChatRoomsObjIds = function (user, callback) {
   Users.findOne({ username: user }, function (err, user) {
     if (err) {
       console.log("Dev Error: " + err); // todo: debugline
@@ -40,7 +40,7 @@ exports.getHistoryChatRoomsObjId = function (user, callback) {
  * @param callback: callback function, callback(err, results)
  */
 exports.getHistoryChatRoomsWithLatest20Msgs = function(user, callback) {
-  this.getHistoryChatRoomsObjId(user, function (err, userHistoryRoomIds) {
+  this.getHistoryChatRoomsObjIds(user, function (err, userHistoryRoomIds) {
     if (err) callback(err, null);
     else {
       ChatRooms.find({'_id': { $in:userHistoryRoomIds}},"messages usernames -_id", function (err, docs) {
@@ -64,7 +64,7 @@ exports.getHistoryChatRoomsWithLatest20Msgs = function(user, callback) {
  * or a new room if not
  */
 exports.getChatRoomByUsers = function (users, callback) {
-  var sortedUsers = users.slice().sort(); // nondestructive sort
+  var sortedUsers = users.slice().sort(); // non-destructive sort
   // 1) search in all rooms: all people: n^2, search log(n^2)
   // 2) search one first and loop is O(n), and guaranteed <= n
   // proved if x != 3, 1) is optimized
@@ -80,20 +80,6 @@ exports.getChatRoomByUsers = function (users, callback) {
         if (err) { callback(err, null); return;}
         console.log("new ChatRoom created! ");
         // save this id to all users
-        // todo: fix another for each issue
-
-        // Users.update({'username': {$in: sortedUsers}}, {$push: {historyRooms: chatRoomFound._id }}, {safe:true}, function (err) {
-/*
-          for (var i = 0; i < sortedUsers.length; i++) {
-          Users.update({ username: sortedUsers[i] },
-            { $push: { historyRooms: newChatRoom._id}},{ safe:true },
-              function (err, numAffected, rawResponse) {
-                  callback(err, newChatRoom);
-                  // end of program, no return needed.
-              }
-            );
-        } // end of for loop
-*/
 
         Users.update({'username': {$in: sortedUsers}}, {$push: {historyRooms: newChatRoom._id}}, {safe: true}, function (err) {
           if (err) callback(err, null);
@@ -101,7 +87,6 @@ exports.getChatRoomByUsers = function (users, callback) {
         });
       });
     } else { // already exist
-      // console.log("getChatRoomByUsers: " + chatRoom);// todo:debug line
       callback(err, chatRoom);
     }
   });
@@ -119,18 +104,12 @@ exports.addMessageToChatRoom = function(users, message, callback) {
     content: message.msg
   };
   var sortedUsers = users.slice().sort();
-  ChatRooms.findOneAndUpdate({ usernames: sortedUsers }, {$push: { messages: newMsg }}, { safe:true, upsert:true, new: true },
-    function (err, chatRoomFound) {
-      // console.log("Chat room found = " + chatRoomFound);
-      if (chatRoomFound.messages.length == 1) {
-          // Just Created a chatroom , save to users.
-          Users.update({'username': {$in: sortedUsers}}, {$push: {historyRooms: chatRoomFound._id }}, {safe:true}, function (err) {
-            if (err) {
-              callback(err);
-            }
-          });
-      }
-      callback(err);
+  ChatRooms.findOneAndUpdate({ usernames: sortedUsers }, {$push: { messages: newMsg }},
+      { safe:true, upsert:true, new: true }, function (err, chatRoomFound) {
+        // update all username in sortedUsers, only add id to historyRoom when it doesn't exist
+      Users.update({'username': {$in: sortedUsers}}, {$addToSet: {historyRooms: chatRoomFound._id}}, {multi: true,safe:true}, function (err) {
+        callback(err);
+      });
     }
   );
 };

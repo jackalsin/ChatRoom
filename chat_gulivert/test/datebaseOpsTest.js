@@ -39,9 +39,7 @@ db.once('open', function () {
                 console.log("Updated Successfully");
                 dbOps.getHistoryChatRoomsObjIds("a1", function (err, chatRoomObjIds) {
                   if (err) throw err;
-                  //todo: look here
                   assert(chatRoomObjIds.length === 2);
-
                   // test of getHistoryMsgFromChatRoom
                   dbOps.getHistoryMsgFromChatRoom(["a1", "a2"], 0, 20, function (err, result) {
                     // todo: add assert about 20
@@ -75,7 +73,6 @@ db.once('open', function () {
                     }); // end of test of getContacts
                   });
                 });
-
               }); // end of test of add messages [a1, a2]
             }); // end of test of add messages [a1, a2]
           });

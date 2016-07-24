@@ -71,7 +71,6 @@ var url = 'mongodb://localhost:27017/conFusion';
 mongoose.connect(url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-console.log("Connect a database");
 db.once('open', function () {
   console.log("Connected correctly to server");
 });
@@ -94,7 +93,7 @@ app.io.on('connection', function(socket){
         socket.emit('initialize', {err: err});
       } else {
         dbOps.getHistoryChatRoomsWithLatest20Msgs(username, function (err, chatRooms) {
-          socket.emit('initialize', {contacts: contacts});
+          socket.emit('initialize', { contacts: contacts, chatRooms: chatRooms});
         });
       }
     });

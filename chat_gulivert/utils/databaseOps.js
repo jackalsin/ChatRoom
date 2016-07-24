@@ -5,14 +5,13 @@ var assert = require('assert');
 var Users = require('./../models/Users');
 var Companies = require('./../models/Company');
 var ChatRooms = require('./../models/Chatrooms');
-var Messages = require('./../models/Message');
 
 exports.getUser = function() {
   throw errno;
 };
 /**
  * get all history chat room given a specific user.
- * @user: username of the history rooms owner
+ * @param user: username of the history rooms owner
  * Usage: getHistoryChatRoomsObjIds("username", function(err, result))
  */
 exports.getHistoryChatRoomsObjIds = function (user, callback) {

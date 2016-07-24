@@ -125,7 +125,6 @@ exports.getHistoryMsgFromChatRoom = function(users, startIndex, endIndex, callba
   ChatRooms.findOne({ usernames: users}, "messages", function (err, chatRoomFound) {
     if (err) callback(err, null);
     else {
-      console.log("Chat room I found: ",chatRoomFound.messages); // todo: debug line
       if (startIndex == 0) {
         callback(err, chatRoomFound.messages.slice(-endIndex));
       } else {

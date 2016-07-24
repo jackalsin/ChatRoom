@@ -20,53 +20,33 @@ db.once('open', function () {
     employees:["b1", "b2", "b3"]
   }];
 
+  var usersToInsert = [{
+    username: "a1",
+    companies:["a"]
+  },{
+    username: "a2",
+    companies:["a"]
+  },{
+    username: "a3",
+    companies:["a"]
+  },{
+    username: "b1",
+    companies:["b"]
+  },{
+    username: "b2",
+    companies:["b"]
+  },{
+    username: "b3",
+    companies:["b"]
+  }];
   Companies.create(companiesToInsert, function (err, companies) {
     if (err) throw err;
     console.log("Insert Companies successfully");
-  });
-  // ----- users ---------------
-  Users.create({
-    username: "a1",
-    companies:["a"]
-  }, function(err) {
-    if (err)
-      console.log(err);
-  });
-  Users.create({
-    username: "a2",
-    companies:["a"]
-  }, function(err) {
-    if (err)
-      console.log(err);
-  });
-  Users.create({
-    username: "a3",
-    companies:["a"]
-  }, function(err) {
-    if (err)
-      console.log(err);
-  });
-    // b company
-  Users.create({
-    username: "b1",
-    companies:["b"]
-  }, function(err) {
-    if (err)
-      console.log(err);
-  });
-  Users.create({
-    username: "b2",
-    companies:["b"]
-  }, function(err) {
-    if (err)
-      console.log(err);
-  });
-  Users.create({
-    username: "b3",
-    companies:["b"]
-  }, function(err) {
-    if (err)
-      console.log(err);
+    // ----- users ---------------
+    Users.create(usersToInsert, function(err, users) {
+      if (err)
+        console.log(err);
+    });
   });
 
 
